@@ -28,20 +28,7 @@ public class RateService {
 
     public Flux<Float> getAllRate(){
         return rateRepository.findAll()
-                .doOnNext(x-> log.info("before delay : {}", x.getFromCurrencyCode()))
-                .flatMap(x->testResult(x).subscribeOn(Schedulers.boundedElastic()))
-                .doOnNext(x-> log.info("after delay : {}", x.getFromCurrencyCode()))
                 .map(Rate::getRate);
-    }
-
-    private Mono<Rate> testResult(Rate rate){
-
-        Random random = new Random();
-
-        return rateRepository.findById(rate.getFromCurrencyCode())
-                .doOnNext(x->log.info("deplying element :{} ", rate.getFromCurrencyCode()))
-                .delayElement(Duration.ofSeconds(random.nextInt(10)));
-
     }
 
     public Mono<Rate> addRate(Rate rate){
