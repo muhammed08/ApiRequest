@@ -24,8 +24,8 @@ public class ApiController {
 
     @GetMapping("/get/{code}")
     public Mono<String> getRate(@PathVariable String code){
-        return Mono.just(code).doOnNext(x-> log.info("started request in {}", x))
-                .flatMap(x ->rateService.getRateById(x))
+        return
+                rateService.getRateById(code).subscribeOn(Schedulers.boundedElastic())
                 .map(Object::toString)
                 .switchIfEmpty(Mono.error(new RuntimeException("Unable to find rate")))
                 .onErrorResume(e-> Mono.just("Unable to find currency"));
@@ -34,7 +34,7 @@ public class ApiController {
     @GetMapping("/getall")
     public Flux<String> getAllRate(){
         log.info("got request:");
-        return rateService.getAllRate()
+        return rateService.getAllRate().subscribeOn(Schedulers.boundedElastic())
                 .doOnNext(x-> log.info("returning request : {}", x))
                 .map(Object::toString)
                 .switchIfEmpty(Mono.error(new RuntimeException("Unable to find rate")))
