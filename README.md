@@ -1,10 +1,4 @@
-Storing password in code is not allowed. However we need keystore password to
-access the key. Here we make use of the AWS secret manager to store the keys and retrive it using 
-aws secret manager client. Currently, the secret manager uses apikey and secret to access
-the keystore password. We use springboot configuration to configure the netty server and Value annotation to assign the config values from the properties file
-
-To create aws secret:
-aws console -> secret manager -> new secret -> provide plain text secret-> name the secret (should be same as provided in code)-> done
-
-To create aws access key and secret:
-aws console -> profile -> security credential -> access keys -> create new access keys
+Project to go through e2e journey of creating a springboot api service usinf 
+spring webflux. The project is build in incremental way, each version is available in the corresponding feature branch.
+The feature branch is named V<Version>.<majorUpdates>.<minorUpdates>. Refer the corresponding README.md to 
+understand what's new implemented in that branch. The terraform code to deploy aws services are provided in a separate repo
