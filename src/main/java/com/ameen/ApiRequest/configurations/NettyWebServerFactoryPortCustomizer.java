@@ -1,8 +1,10 @@
 package com.ameen.ApiRequest.configurations;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
+import com.amazonaws.services.secretsmanager.AWSSecretsManagerClient;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
@@ -38,9 +40,16 @@ public class NettyWebServerFactoryPortCustomizer
     public void customize(NettyReactiveWebServerFactory serverFactory) {
 
         AWSStaticCredentialsProvider awsStaticCredentialsProvider = new AWSStaticCredentialsProvider(new BasicAWSCredentials(keyId, key));
-        AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard().withRegion("us-east-1")
+
+        AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard()
+                .withRegion("us-east-1")
                 .withCredentials(awsStaticCredentialsProvider)
                 .build();
+        //
+//        AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard().withRegion("us-east-1")
+//                .build();
+
+
 
         // Specify the name of your secret
         String secretName = "keyStorePassword";

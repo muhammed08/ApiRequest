@@ -26,6 +26,7 @@ public class ApiController {
                 .flatMap(x ->rateService.getRateById(x))
                 .map(Object::toString)
                 .switchIfEmpty(Mono.error(new RuntimeException("Unable to find rate")))
+                .doOnError(error -> log.info("Error processing request {}",error.toString()))
                 .onErrorResume(e-> Mono.just("Unable to find currency"));
     }
 
@@ -35,12 +36,20 @@ public class ApiController {
         return rateService.getAllRate()
                 .doOnNext(x-> log.info("returning request : {}", x))
                 .map(Object::toString)
-                .switchIfEmpty(Mono.error(new RuntimeException("Unable to find rate")))
+                .switchIfEmpty(Mono.error(new RuntimeException("No rate found")))
+                .doOnError(error -> log.info("Error processing request {}",error.toString()))
                 .onErrorResume(e-> Mono.just("Unable to find currency"));
     }
 
-    @PostMapping("add")
+    @PostMapping("/update")
+    public Mono<Void> updateRate(@RequestBody Rate rate){
+        rate.setIsNew(Boolean.FALSE);
+        return rateService.addRate(rate).then();
+    }
+
+    @PostMapping("/add")
     public Mono<Void> addRate(@RequestBody Rate rate){
+        rate.setIsNew(Boolean.TRUE);
         return rateService.addRate(rate).then();
     }
 
